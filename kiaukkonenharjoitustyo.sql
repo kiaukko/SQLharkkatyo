@@ -1,5 +1,5 @@
 DROP DATABASE IF EXISTS lounasruokapalvelu;
-CREATE DATABASE lounasruokapalvelu DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci;
+CREATE DATABASE lounasruokapalvelu DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci ENGINE = InnoDB;
 
 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
@@ -19,9 +19,7 @@ CREATE TABLE IF NOT EXISTS `lounasruokapalvelu`.`maksaja` (
   `katuosoite` VARCHAR(45) NOT NULL,
   `postinumero` VARCHAR(5) NOT NULL,
   PRIMARY KEY (`maksajaid`),
-  UNIQUE INDEX `maksajaid_UNIQUE` (`maksajaid` ASC) VISIBLE)
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8mb3;
+  UNIQUE INDEX `maksajaid_UNIQUE` (`maksajaid` ASC) VISIBLE);
 
 
 -- -----------------------------------------------------
@@ -44,9 +42,7 @@ CREATE TABLE IF NOT EXISTS `lounasruokapalvelu`.`asiakas` (
   INDEX `fk_ASIAKAS_MAKSAJA1_idx` (`maksajaid` ASC) VISIBLE,
   CONSTRAINT `fk_ASIAKAS_MAKSAJA1`
     FOREIGN KEY (`maksajaid`)
-    REFERENCES `lounasruokapalvelu`.`maksaja` (`maksajaid`))
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8mb3;
+    REFERENCES `lounasruokapalvelu`.`maksaja` (`maksajaid`));
 
 
 -- -----------------------------------------------------
@@ -57,9 +53,7 @@ CREATE TABLE IF NOT EXISTS `lounasruokapalvelu`.`erityisruokavalio` (
   `erityisruokavalionimi` VARCHAR(45) NOT NULL,
   `kuvaus` VARCHAR(200) NULL DEFAULT NULL,
   PRIMARY KEY (`erityisruokavalioid`),
-  UNIQUE INDEX `erityisruokavalioid_UNIQUE` (`erityisruokavalioid` ASC) VISIBLE)
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8mb3;
+  UNIQUE INDEX `erityisruokavalioid_UNIQUE` (`erityisruokavalioid` ASC) VISIBLE);
 
 
 -- -----------------------------------------------------
@@ -82,9 +76,7 @@ CREATE TABLE IF NOT EXISTS `lounasruokapalvelu`.`asiakkaanvalio` (
     FOREIGN KEY (`erityisruokavalioid`)
     REFERENCES `lounasruokapalvelu`.`erityisruokavalio` (`erityisruokavalioid`)
     ON DELETE RESTRICT
-    ON UPDATE RESTRICT)
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8mb3;
+    ON UPDATE RESTRICT);
 
 
 -- -----------------------------------------------------
@@ -115,9 +107,7 @@ CREATE TABLE IF NOT EXISTS `lounasruokapalvelu`.`paivanruoka` (
     FOREIGN KEY (`ruokalajinro`)
     REFERENCES `lounasruokapalvelu`.`ruoka` (`ruokalajinro`)
     ON DELETE RESTRICT
-    ON UPDATE RESTRICT)
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8mb3;
+    ON UPDATE RESTRICT);
 
 
 -- -----------------------------------------------------
@@ -141,17 +131,15 @@ CREATE TABLE IF NOT EXISTS `lounasruokapalvelu`.`tilaustuote` (
     FOREIGN KEY (`paivanruokaid`)
     REFERENCES `lounasruokapalvelu`.`paivanruoka` (`paivanruokaid`)
     ON DELETE RESTRICT
-    ON UPDATE RESTRICT)
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8mb3;
+    ON UPDATE RESTRICT);
 
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 
--- rajoitteita, joita oon tosin jo aiemmin 
--- tauluja luodessa määritelly suurimman osan:
+-- rajoitteita, joita oon tosin jo aiemmin tauluja luodessa määritelly suurimman osan, moni näistä checkeistä
+-- voitaisiin ja kannattaisi tehdä myös jo suoraan UI:n päällä:
 
 ALTER TABLE maksaja 
 ADD CHECK (sposti like '%@%');
